@@ -1,4 +1,4 @@
-from .email import EmailThread, MailUser
+from utils.email import EmailThread, MailUser
 import datetime
 
 class GmailParser:
@@ -24,17 +24,17 @@ class GmailParser:
             for user in to:
                 split = user.split('<')
                 users.append({
-                    'name' : split[0],
-                    'email' : split[1]
+                    'name' : split[0].replace('"',''),
+                    'email' : split[1].replace('>','')
                 })
-            fromUser = GmailParser.__searchHeader(message['payload']['headers'], 'From')
+            fromUser = GmailParser.__searchHeader(message['payload']['headers'], 'From').split('<')
             obj['messages'].append({
                 'id' : message['id'],
                 'subject' : GmailParser.__searchHeader(message['payload']['headers'], 'Subject'),
                 'users' : users,
                 'from' : {
-                    'name' : fromUser[0],
-                    'email' : fromUser[1]
+                    'name' : fromUser[0].replace('"',''),
+                    'email' : fromUser[1].replace('>','')
                 },
                 'date' : datetime.datetime.fromtimestamp(int(message['internalDate'])/1000.0)
             })
