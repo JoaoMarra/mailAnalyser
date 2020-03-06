@@ -3,6 +3,7 @@ import pickle
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from datetime import datetime
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
@@ -58,7 +59,10 @@ class GmailReader:
             ).execute().get('threads', []);
         threadArray = []
         for thread in threads:
-            threadArray.append(self.thread.get(userId='me',id=thread['id']).execute())
+            tObj = self.thread.get(userId='me',id=thread['id']).execute()
+            tObj['messages'] = list(filter(lambda x: (datetime.fromtimestamp(int(x['internalDate'])/1000.0) > dateStart and datetime.fromtimestamp(int(x['internalDate'])/1000.0) < dateEnd), tObj['messages']))
+            
+            threadArray.append(tObj)
 
         return threadArray
 

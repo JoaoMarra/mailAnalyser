@@ -11,7 +11,6 @@ yesterday = datetime.today() - timedelta(days=6)
 threads = reader.readThreads(yesterday, now)
 parsed = GmailParser.parseThreads(threads)
 
-for p in parsed:
-    print(p.messages[0])
-    response = EmailAnalyser.calculateResponseArrayForThread(p, reader.me)
-    print(response)
+response = EmailAnalyser.calculateReponseForUserForThreads(parsed, reader.me)
+for r in response:
+    print(r + ': '+str(response[r]))
