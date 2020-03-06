@@ -1,17 +1,14 @@
-from utils.emailReader import EmailReader
+from utils.gmailReader import GmailReader
+from utils.gmailParser import GmailParser
 from datetime import datetime, timedelta
 
-reader = EmailReader()
+reader = GmailReader()
 
 now = datetime.today() - timedelta(days=0)
 yesterday = datetime.today() - timedelta(days=6)
 
-mails = reader.readEmails(yesterday, now)
-print(len(mails))
-mails = reader.removeRepeatedThread(mails)
-print(len(mails))
+threads = reader.readThreads(yesterday, now)
+parsed = GmailParser.parseThreads(threads)
 
-for m in mails:
-    reader.calculateResponseArray(m)
-    print(str(m.id)+' - '+str(m.fromUser))
-    print('response'+str(m.responseArray))
+for p in parsed:
+    print(p)
